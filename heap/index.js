@@ -9,7 +9,11 @@ class Heap {
   constructor(size, order=-1) {
     this.clearStore(size)
     this._order = order;
-    this._shiftDownFilter = order < 0 ? (a, b) => b <= a : a <= b;
+    this._shiftDownFilter = order < 0 ? function(a, b) {
+      return b <= a;
+    } : function(a, b) {
+      return a <= b;
+    };
     this._shiftUpFilter = _.negate(this._shiftDownFilter)
   }
   [Symbol.iterator] () {
@@ -53,7 +57,13 @@ class Heap {
   // internal
   compare(p, children, filter, sort) {
     if (!sort) {throw new Error('must provide a sort order to compare')}
-    return _(children).filter(filter).orderBy(null, sort).value();
+    return _(children).filter(filter).value().sort(([aIdx, aVal], [bIdx, bVal]) => {
+      if (sort === -1) {
+        return aVal - bVal;
+      } else {
+        return bVal - aVal;
+      }
+    })
   }
   fetch(i) {
     return this._store[i];
@@ -72,7 +82,7 @@ class Heap {
   shiftDown(i) {
     let val = this._store[i];
     // [[c1Idx, c1Val], [c2Idx, c2Val]] = this.getChildren(i);
-    let order = this._order < 0 ? 'asc': 'desc';
+    let order = this._order < 0 ? -1: 1;
     let filter = val === null ? ([i, val]) => !_.isNull(val) && !_.isUndefined(val) : this._shiftDownFilter.bind(null, val)
     let matches = this.compare(val, this.getChildren(i), filter, order);
     if (matches.length) {

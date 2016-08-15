@@ -15,17 +15,24 @@ describe('Heap', () => {
 
     assertOrder(h);
     done();
-  })
+  });
 
   it('should support heapify', done => {
     // min heap
-    let input = initializeRandomArray(10);
+    let input = initializeRandomArray(1000);
     let h = new Heap(input.length, -1);
     h.heapify(input)
-    console.log(input, h._store)
-    assertOrder(h);
+    assertOrder(h, -1);
     done();
-  })
+  });
+
+  it('should support max heaps', done => {
+    let input = initializeRandomArray(1000);
+    let h = new Heap(input.length, 1);
+    h.heapify(input);
+    assertOrder(h, 1);
+    done();
+  });
 });
 
 
@@ -41,5 +48,5 @@ function assertOrder(heap, order=-1) {
 }
 
 function initializeRandomArray(size) {
-  return _.map(Array(size), x => Math.floor(Math.random()* 10))
+  return _.map(Array(size), x => Math.floor(Math.random()* 1000))
 }
