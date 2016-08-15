@@ -6,8 +6,8 @@ const _ = require('lodash');
 
 // will run min-heap first
 class Heap {
-  constructor(size, order=-1) {
-    this.clearStore(size)
+  constructor(order=-1) {
+    this.clearStore()
     this._order = order;
     this._shiftDownFilter = order < 0 ? function(a, b) {
       return b <= a;
@@ -31,7 +31,12 @@ class Heap {
   }
   insert(val) {
     let i = this.firstOpen();
-    this._store[i] = val
+    if (i === -1) {
+      this._store.push(val);
+      i = this._store.length - 1;
+    } else {
+      this._store[i] = val
+    }
     return this.shiftUp(i);
   }
   extract() {
@@ -110,9 +115,8 @@ class Heap {
   firstOpen() {
     return _.indexOf(this._store, null);
   }
-  clearStore(size) {
-    size = size || this._store.length
-    this._store = _.fill(Array(size), null);
+  clearStore() {
+    this._store = [];
   }
 }
 
