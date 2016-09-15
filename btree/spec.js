@@ -17,9 +17,9 @@ describe('BTree', () => {
   });
 
   it('should find', done => {
-    const randoms = _.map(_.range(20), () => Math.floor(Math.random() * 1000));
+    const randoms = new Set(_.map(_.range(20), () => Math.floor(Math.random() * 1000)));
 
-    _.reduce(randoms, (tree, num) => tree.add(num), tree);
+    _.forIn(randoms, r => tree.add(r));
 
     let val = randoms[5];
     expect(tree.contains(val)).to.equal(true);
@@ -28,7 +28,7 @@ describe('BTree', () => {
   it('should remove', done => {
     const randoms = _.map(_.range(20), () => Math.floor(Math.random() * 1000));
 
-    _.reduce(randoms, (tree, num) => tree.add(num), tree);
+    _.forEach(randoms, r => tree.add(r));
 
     let val = randoms[5];
     expect(tree.remove(val)).to.equal(true);
